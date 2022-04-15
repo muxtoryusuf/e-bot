@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  tbbotdb:
+    container_name: tbbotdb
+    image: postgres:12.2
+    environment:
+      POSTGRES_DB: db_botserver
+      POSTGRES_USER: bot_user
+      POSTGRES_PASSWORD: bot_pass
+
+  tbbotweb:
+    container_name: tbbotweb
+    build: .
+    command: python manage.py runserver 0.0.0.0:2020
+    volumes:
+      - .:/code
+    ports:
+      - "2020:2020"
+    depends_on:
+      - tbbotdb
+    env_file:
+      - .env.dev

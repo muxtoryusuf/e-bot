@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+
+  botproddb:
+    container_name: botproddb
+    image: postgres:12.2
+    environment:
+      POSTGRES_DB: db_botserver_prod
+      POSTGRES_USER: bot_user_prod
+      POSTGRES_PASSWORD: bot_pass_prod
+    networks:
+      - main_prod
+    volumes:
+        - botdb_data_prod:/var/lib/postgresql/botbordata/
+
+  botweb_prod:
+    container_name: botweb_prod
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    command: gunicorn tez_bot.wsgi:application --bind 0.0.0.0:2525
+    volumes:
+      - static_volume_botbor_prod:/home/app/web/static
+      - media_volume_botbor_prod:/home/app/web/media
+    ports:
+      - "2525:2525"
+    depends_on:
+      - botproddb
+    networks:
+      - main_prod
+    env_file:
+      - .env.prod
+
+  botnginx:
+    container_name: botnginx
+    restart: always
+    build: ./nginx
+
+    ports:
+      - "2020:2020"
+    networks:
+      - main_prod
+    volumes:
+      - static_volume_botbor_prod:/home/app/web/static
+      - media_volume_botbor_prod:/home/app/web/media
+    depends_on:
+      - botweb_prod
+
+volumes:
+    botdb_data_prod:
+    static_volume_botbor_prod:
+    media_volume_botbor_prod:
+  
+networks:
+  main_prod:
+    driver: bridge
+  
