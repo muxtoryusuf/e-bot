@@ -2,4 +2,7 @@
 
 Django backend server.
 
-![](../../CompassX/01.jpg)![](../../CompassX/02.jpg)![](../../CompassX/03.jpg)![](../../CompassX/04.jpg)
+![](01.jpg)
+![](02.jpg)
+![](03.jpg)
+![](04.jpg)
